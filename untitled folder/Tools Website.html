@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Collection | All your tools in one place</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#000000',
+                        teal: '#009688',
+                    },
+                    borderRadius: {
+                        '2xl': '1rem',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .tool-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-preview {
+            width: 100%;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-preview-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover .card-preview-thumb {
+            transform: scale(1.04);
+        }
+
+        .card-preview-icon {
+            width: 64px;
+            height: 64px;
+            opacity: 0.9;
+        }
+
+        .card-body {
+            padding: 16px 16px 20px 16px;
+        }
+
+        .card-title-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #009688;
+            line-height: 1.3;
+            flex: 1;
+        }
+
+        .card-menu-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 2px 4px;
+            color: #999;
+            flex-shrink: 0;
+            margin-left: 8px;
+            margin-top: -2px;
+            transition: color 0.15s;
+        }
+
+        .card-menu-btn:hover {
+            color: #333;
+        }
+
+        .card-description {
+            font-size: 0.84rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hide scrollbar for category filter */
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-white min-h-screen">
+    <div id="root"></div>
+
+    <!-- React and Babel CDNs -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        const toolsData = [
+            {
+                id: 1,
+                name: "Point File Creator",
+                description: "A web-based tool for creating point-based maps from CSV/Excel data and exporting to KML format.",
+                category: "Map Tools",
+                icon: "map-pin",
+                previewBg: "#2c3e50",
+                previewIconColor: "#ffffff",
+                thumbnail: "Thumbnail/Point File Creator.png",
+                url: "https://point-file-creator.vercel.app/",
+                readme: "https://github.com/soemoehtun/Point-File-Creator"
+            },
+            {
+                id: 2,
+                name: "Site to Site Distance Calculator",
+                description: "Calculate the precise geodetic distance between two network sites.",
+                category: "Map Tools",
+                icon: "ruler",
+                previewBg: "#1a3a5c",
+                previewIconColor: "#ffffff",
+                thumbnail: "Thumbnail/Site To Site Distance.png",
+                url: "https://site-2-site-distance-calculator.vercel.app/",
+                readme: "https://github.com/soemoehtun/Sector-To-Site-Distance-Calculator"
+            },
+            {
+                id: 3,
+                name: "Cell Parameter KML Export Tool",
+                description: "Convert site data into KML format for Google Earth visualization.",
+                category: "Map Tools",
+                icon: "map",
+                previewBg: "#009688",
+                previewIconColor: "#ffffff",
+                thumbnail: "Thumbnail/Cell File Creator.png",
+                url: "https://engineering-parameter-kml-creator.vercel.app/",
+                readme: "https://github.com/soemoehtun/Site-2-Site-Distance-Calculator"
+            },
+            {
+                id: 4,
+                name: "Sector to Site Distance Calculator",
+                description: "Calculate the distance from a sector antenna to a target site with precision.",
+                category: "Map Tools",
+                icon: "antenna",
+                previewBg: "#37474f",
+                previewIconColor: "#ffffff",
+                thumbnail: "Thumbnail/Sector To Site Distance.png",
+                url: "https://sector-to-site-distance-calculator.vercel.app/",
+                readme: "https://github.com/soemoehtun/Engineering-Parameter-KML-creator"
+            }
+        ];
+
+        const categories = ["All", "Excel Tools", "Map Tools", "Converter Tools"];
+
+        const Icon = ({ name, className }) => {
+            useEffect(() => {
+                if (window.lucide) {
+                    window.lucide.createIcons();
+                }
+            }, [name]);
+            return <i data-lucide={name.toLowerCase().replace(/([a-z0-9])([A-Z])/g, '$1-$2')} className={className}></i>;
+        };
+
+        const ToolCard = ({ tool }) => {
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [tool.icon]);
+            return (
+                <div
+                    className="tool-card bg-white shadow-sm fade-in flex flex-col h-full"
+                    style={{ border: '1px solid #e0e0e0' }}
+                >
+                    {/* Preview Area */}
+                    <div
+                        className="card-preview"
+                        style={{ background: tool.previewBg, cursor: 'pointer' }}
+                        onClick={() => {
+                            if (tool.url && tool.url !== "#") {
+                                window.open(tool.url, '_blank');
+                            } else {
+                                alert(`Opening ${tool.name} (Preview Mode)`);
+                            }
+                        }}
+                    >
+                        <img
+                            src={tool.thumbnail}
+                            alt={tool.name}
+                            className="card-preview-thumb"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                            }}
+                        />
+                    </div>
+
+                    {/* Card Body */}
+                    <div className="card-body flex-grow">
+                        <div className="card-title-row">
+                            <span
+                                className="card-title"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => {
+                                    if (tool.url && tool.url !== "#") {
+                                        window.open(tool.url, '_blank');
+                                    }
+                                }}
+                            >
+                                {tool.name}
+                            </span>
+                            <button className="card-menu-btn" title="More options">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="12" cy="5" r="1.5" />
+                                    <circle cx="12" cy="12" r="1.5" />
+                                    <circle cx="12" cy="19" r="1.5" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p className="card-description">{tool.description}</p>
+                        {tool.readme && (
+                            <a
+                                href={tool.readme}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', marginTop: '8px', fontSize: '0.78rem', color: '#009688', textDecoration: 'none', fontWeight: 500 }}
+                                onMouseOver={e => e.currentTarget.style.textDecoration = 'underline'}
+                                onMouseOut={e => e.currentTarget.style.textDecoration = 'none'}
+                            >
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" /></svg>
+                                README
+                            </a>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [searchTerm, setSearchTerm] = useState("");
+            const [activeCategory, setActiveCategory] = useState("All");
+
+            const filteredTools = useMemo(() => {
+                return toolsData.filter(tool => {
+                    const matchesCategory = activeCategory === "All" || tool.category === activeCategory;
+                    const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        tool.description.toLowerCase().includes(searchTerm.toLowerCase());
+                    return matchesCategory && matchesSearch;
+                });
+            }, [searchTerm, activeCategory]);
+
+            return (
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    {/* Header Section */}
+                    <div className="flex flex-row items-center justify-between mb-8 md:mb-12 gap-3 md:gap-0">
+                        <div className="order-2 md:order-1 text-left flex-1">
+                            <h1 className="text-xl md:text-5xl font-extrabold tracking-tight mb-2 md:mb-4">
+                                Tool Collection
+                            </h1>
+                            <p className="text-xs md:text-base text-gray-500 max-w-2xl">
+                                All your professional telecom tools in one place. Streamline your workflow with our minimalist toolkit.
+                            </p>
+                        </div>
+                        <div className="order-1 md:order-2 flex-shrink-0 flex flex-col items-center gap-1 md:gap-2">
+                            <img
+                                src="Thumbnail/Profile Image.png"
+                                alt="Profile"
+                                className="w-32 h-32 md:w-36 md:h-36"
+                                style={{ objectFit: 'contain' }}
+                            />
+                            {/* Social Buttons */}
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                                <a href="https://github.com/soemoehtun" target="_blank" rel="noopener noreferrer" title="GitHub"
+                                    style={{ transition: 'transform 0.2s' }}
+                                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
+                                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                >
+                                    <img src="https://raw.githubusercontent.com/soemoehtun/profolio/refs/heads/main/assets/Icons/github.svg" alt="GitHub" style={{ width: '30px', height: '30px' }} />
+                                </a>
+                                <a href="https://www.linkedin.com/in/soe-moe-tun-04346b186/" target="_blank" rel="noopener noreferrer" title="LinkedIn"
+                                    style={{ transition: 'transform 0.2s' }}
+                                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
+                                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                >
+                                    <img src="https://raw.githubusercontent.com/soemoehtun/profolio/refs/heads/main/assets/Icons/linkedin.svg" alt="LinkedIn" style={{ width: '30px', height: '30px' }} />
+                                </a>
+                                {/* Gmail */}
+                                <a href="https://mail.google.com/mail/?view=cm&to=soemoetun.ec@gmail.com" target="_blank" rel="noopener noreferrer" title="Send Email"
+                                    style={{ transition: 'transform 0.2s' }}
+                                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
+                                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                >
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail" style={{ width: '30px', height: '30px' }} />
+                                </a>
+                                {/* Viber */}
+                                <a href="tel:+959798101036" title="Viber"
+                                    style={{ transition: 'transform 0.2s' }}
+                                    onMouseOver={e => e.currentTarget.style.transform = 'scale(1.2)'}
+                                    onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                                >
+                                    <img src="https://raw.githubusercontent.com/soemoehtun/profolio/refs/heads/main/assets/Icons/phone.svg" alt="Viber" style={{ width: '30px', height: '30px' }} />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Search & Filter Section */}
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-6 mb-8 md:mb-12">
+                        {/* Search Bar */}
+                        <div className="relative w-full md:w-96 group">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Icon name="Search" className="h-5 w-5 text-gray-400 group-focus-within:text-black transition-colors" />
+                            </div>
+                            <input
+                                type="text"
+                                className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent sm:text-sm transition-all shadow-sm"
+                                placeholder="Search for tools..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+
+                        {/* Category Filter */}
+                        <div className="flex flex-nowrap justify-start md:justify-end gap-1 md:gap-2 overflow-x-auto w-full no-scrollbar pb-1">
+                            {categories.map(category => (
+                                <button
+                                    key={category}
+                                    onClick={() => setActiveCategory(category)}
+                                    className={`px-2 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${activeCategory === category
+                                        ? "bg-black text-white shadow-lg scale-105"
+                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                        }`}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Tools Grid */}
+                    {filteredTools.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {filteredTools.map(tool => (
+                                <ToolCard key={tool.id} tool={tool} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 fade-in">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-100 rounded-full mb-4">
+                                <Icon name="Search" className="w-10 h-10 text-gray-400" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-gray-900 mb-1">No tools found</h3>
+                            <p className="text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+                        </div>
+                    )}
+
+
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+
+</html>
