@@ -292,7 +292,7 @@
                 icon: "map-pin",
                 previewBg: "#2c3e50",
                 previewIconColor: "#ffffff",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/Point%20File%20Creator.png",
+                thumbnail: "./Thumbnail/Point%20File%20Creator.png",
                 url: "https://point-file-creator.vercel.app/",
                 readme: "https://github.com/soemoehtun/Point-File-Creator/blob/main/README.md"
             },
@@ -304,7 +304,7 @@
                 icon: "ruler",
                 previewBg: "#1a3a5c",
                 previewIconColor: "#ffffff",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/Site%20To%20Site%20Distance.png",
+                thumbnail: "./Thumbnail/Site%20To%20Site%20Distance.png",
                 url: "https://site-2-site-distance-calculator.vercel.app/",
                 readme: "https://github.com/soemoehtun/Site-2-Site-Distance-Calculator/blob/main/README.md"
             },
@@ -316,7 +316,7 @@
                 icon: "map",
                 previewBg: "#009688",
                 previewIconColor: "#ffffff",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/Cell%20File%20Creator.png",
+                thumbnail: "./Thumbnail/Cell%20File%20Creator.png",
                 url: "https://engineering-parameter-kml-creator.vercel.app/",
                 readme: "https://github.com/soemoehtun/Engineering-Parameter-KML-creator/blob/main/README.md"
             },
@@ -328,7 +328,7 @@
                 icon: "antenna",
                 previewBg: "#37474f",
                 previewIconColor: "#ffffff",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/Sector%20To%20Site%20Distance.png",
+                thumbnail: "./Thumbnail/Sector%20To%20Site%20Distance.png",
                 url: "https://sector-to-site-distance-calculator.vercel.app/",
                 readme: "https://github.com/soemoehtun/Sector-To-Site-Distance-Calculator/blob/main/README.md"
             },
@@ -340,7 +340,7 @@
                 icon: "signal",
                 previewBg: "#0d1b2a",
                 previewIconColor: "#0083c1",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/Cell%20ID%20Calculator.png",
+                thumbnail: "./Thumbnail/Cell%20ID%20Calculator.png",
                 url: "https://cell-id-calculator.vercel.app/",
                 readme: "https://github.com/soemoehtun/cell-id-calculator/blob/main/README.md"
             },
@@ -352,7 +352,7 @@
                 icon: "coins",
                 previewBg: "#b8860b",
                 previewIconColor: "#ffffff",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/Gold%20Calculator.png",
+                thumbnail: "./Thumbnail/Gold%20Calculator.png",
                 url: "https://gold-calculator-six-pi.vercel.app/",
                 readme: "https://github.com/soemoehtun/Gold-Calculator/blob/main/README.md"
             },
@@ -360,11 +360,11 @@
                 id: 7,
                 name: "Row To Column Converter",
                 description: "Convert rows to columns or columns to rows instantly. Upload CSV, Excel, or text files, transform your data with one click, and export accurate results in seconds.",
-                category: "Converter Tools",
+                category: "Excel Tools",
                 icon: "table",
                 previewBg: "#2563eb",
                 previewIconColor: "#ffffff",
-                thumbnail: "https://raw.githubusercontent.com/soemoehtun/Tool-Collection/main/Thumbnail/rowtocolumn.png",
+                thumbnail: "./Thumbnail/rowtocolumn.png",
                 url: "https://rowtocolumn.vercel.app/",
                 readme: "https://github.com/soemoehtun/rowtocolumnconverter/blob/main/README.md"
             }
@@ -382,6 +382,7 @@
         };
 
         const ToolCard = ({ tool }) => {
+            const [imgError, setImgError] = useState(false);
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
             }, [tool.icon]);
@@ -402,14 +403,18 @@
                             }
                         }}
                     >
-                        <img
-                            src={tool.thumbnail}
-                            alt={tool.name}
-                            className="card-preview-thumb"
-                            onError={(e) => {
-                                e.target.style.display = 'none';
-                            }}
-                        />
+                        {!imgError ? (
+                            <img
+                                src={tool.thumbnail}
+                                alt={tool.name}
+                                className="card-preview-thumb"
+                                onError={() => setImgError(true)}
+                            />
+                        ) : (
+                            <div className="card-preview-icon flex items-center justify-center" style={{ color: tool.previewIconColor }}>
+                                <i data-lucide={tool.icon} style={{ width: 64, height: 64, strokeWidth: 1.5 }}></i>
+                            </div>
+                        )}
                     </div>
 
                     {/* Card Body */}
