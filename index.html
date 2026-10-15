@@ -417,10 +417,39 @@
                 thumbnail: "./Thumbnail/route.png",
                 url: "https://route-distance-calculator-87us.vercel.app/",
                 readme: "https://github.com/soemoehtun/Route-Distance-Calculator/blob/main/README.md"
+            },
+            {
+                id: 13,
+                name: "7-Days Traffic Load Check Report",
+                description: "Excel VBA tool that imports 7-day busy-hour traffic data for Huawei/Ericsson UMTS (3G) and LTE (4G), derives throughput and resource-utilization KPIs, flags possible load-limited cells, and aggregates results date-wise into a summary.",
+                category: "Excel Tools",
+                group: "vba",
+                icon: "gauge",
+                previewBg: "#37474f",
+                previewIconColor: "#ffffff",
+                thumbnail: "./Thumbnail/vba.png",
+                url: "https://github.com/soemoehtun/Daily-3G-4G-Throughput-Combination-",
+                readme: "https://github.com/soemoehtun/Daily-3G-4G-Throughput-Combination-/blob/main/marco.md"
+            },
+            {
+                id: 14,
+                name: "CA Traffic Degrade Analysis Tool",
+                description: "Excel VBA automation tool that processes CA Query Data and Cell Report data, generates cell-level and site-level KPI reports, and highlights zero-KPI values for issue investigation.",
+                category: "Excel Tools",
+                group: "vba",
+                icon: "file-spreadsheet",
+                previewBg: "#1b5e20",
+                previewIconColor: "#ffffff",
+                thumbnail: "./Thumbnail/vba.png",
+                url: "https://github.com/soemoehtun/CA-Cell-Vs-Site-Level-KPIs-Report",
+                readme: "https://github.com/soemoehtun/CA-Cell-Vs-Site-Level-KPIs-Report/blob/main/README.md"
             }
         ];
 
+        const groups = ["All", "Web Apps", "VBA"];
         const categories = ["All", "Excel Tools", "Map Tools", "Converter Tools", "Calculator Tools"];
+
+        const isVbaTool = (tool) => tool.group === "vba";
 
         const Icon = ({ name, className, style }) => {
             useEffect(() => {
@@ -702,6 +731,7 @@
 
         const App = () => {
             const [searchTerm, setSearchTerm] = useState("");
+            const [activeGroup, setActiveGroup] = useState("All");
             const [activeCategory, setActiveCategory] = useState("All");
             const [dark, setDark] = useState(() => {
                 const saved = localStorage.getItem('theme');
@@ -715,19 +745,21 @@
 
             const filteredTools = useMemo(() => {
                 return toolsData.filter(tool => {
+                    const matchesGroup = activeGroup === "All"
+                        || (activeGroup === "VBA" ? isVbaTool(tool) : !isVbaTool(tool));
                     const matchesCategory = activeCategory === "All" || tool.category === activeCategory;
                     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         tool.description.toLowerCase().includes(searchTerm.toLowerCase());
-                    return matchesCategory && matchesSearch;
+                    return matchesGroup && matchesCategory && matchesSearch;
                 });
-            }, [searchTerm, activeCategory]);
+            }, [searchTerm, activeCategory, activeGroup]);
 
             return (
                 <>
                     <div className="pullcord-wrap">
                         <PullCord onPull={() => setDark(d => !d)} pulled={dark} />
                     </div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                     {/* Header Section */}
                     <div className="flex flex-col mb-8 md:mb-12">
                             <h1 className="text-2xl md:text-5xl font-extrabold tracking-tight mb-2 md:mb-4">
@@ -738,62 +770,91 @@
                             </p>
                     </div>
 
-                    {/* Search & Filter Section */}
-                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-6 mb-8 md:mb-12">
-                        {/* Search Bar */}
-                        <div className="relative w-full md:w-96 group">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Icon name="Search" className="h-5 w-5 transition-colors" style={{color: 'var(--muted-light)'}} />
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+                        {/* Left Bookmark Bar */}
+                        <aside className="md:w-28 lg:w-32 flex-shrink-0 md:sticky md:top-6 md:self-start">
+                            <div className="flex md:flex-col md:items-start gap-1 overflow-x-auto no-scrollbar pb-1 md:pb-0">
+                                {groups.map(group => {
+                                    const active = activeGroup === group;
+                                    return (
+                                        <button
+                                            key={group}
+                                            onClick={() => { setActiveGroup(group); setActiveCategory("All"); }}
+                                            className={`text-sm font-medium transition-all whitespace-nowrap text-left flex-shrink-0 px-3 py-2 border-l-2 ${active ? "border-l-2" : "border-transparent"}`}
+                                            style={{
+                                                color: active ? 'var(--fg)' : 'var(--muted-light)',
+                                                borderColor: active ? 'var(--fg)' : 'transparent'
+                                            }}
+                                            onMouseOver={e => { if (!active) e.currentTarget.style.color = 'var(--fg)'; }}
+                                            onMouseOut={e => { if (!active) e.currentTarget.style.color = 'var(--muted-light)'; }}
+                                        >
+                                            {group}
+                                        </button>
+                                    );
+                                })}
                             </div>
-                            <input
-                                type="text"
-                                className="search-input block w-full pl-10 pr-3 py-3 border rounded-xl leading-5 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all shadow-sm"
-                                style={{ background: 'var(--card)', color: 'var(--fg)', borderColor: 'var(--border)' }}
-                                placeholder="Search for tools..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </div>
+                        </aside>
 
-                        {/* Category Filter */}
-                        <div className="flex flex-nowrap justify-start md:justify-end gap-1 md:gap-2 overflow-x-auto w-full no-scrollbar pb-1">
-                            {categories.map(category => (
-                                <button
-                                    key={category}
-                                    onClick={() => setActiveCategory(category)}
-                                    className={`text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 px-1 py-1 border-b-2 ${activeCategory === category
-                                        ? "border-b-2"
-                                        : "border-transparent"
-                                        }`}
-                                    style={{
-                                        color: activeCategory === category ? 'var(--fg)' : 'var(--muted-light)',
-                                        borderColor: activeCategory === category ? 'var(--fg)' : 'transparent'
-                                    }}
-                                    onMouseOver={e => { if (activeCategory !== category) e.currentTarget.style.color = 'var(--fg)'; }}
-                                    onMouseOut={e => { if (activeCategory !== category) e.currentTarget.style.color = 'var(--muted-light)'; }}
-                                >
-                                    {category}
-                                </button>
-                            ))}
-                        </div>
+                        {/* Main Content */}
+                        <main className="flex-1 min-w-0">
+                            {/* Search & Filter Section */}
+                            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 md:gap-6 mb-8 md:mb-12">
+                                {/* Search Bar */}
+                                <div className="relative w-full md:w-96 group">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Icon name="Search" className="h-5 w-5 transition-colors" style={{color: 'var(--muted-light)'}} />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="search-input block w-full pl-10 pr-3 py-3 border rounded-xl leading-5 focus:outline-none focus:ring-2 focus:border-transparent sm:text-sm transition-all shadow-sm"
+                                        style={{ background: 'var(--card)', color: 'var(--fg)', borderColor: 'var(--border)' }}
+                                        placeholder="Search for tools..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </div>
+
+                                {/* Category Filter */}
+                                <div className="flex flex-nowrap justify-start md:justify-end gap-1 md:gap-2 overflow-x-auto w-full no-scrollbar pb-1">
+                                    {categories.map(category => (
+                                        <button
+                                            key={category}
+                                            onClick={() => setActiveCategory(category)}
+                                            className={`text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 px-1 py-1 border-b-2 ${activeCategory === category
+                                                ? "border-b-2"
+                                                : "border-transparent"
+                                                }`}
+                                            style={{
+                                                color: activeCategory === category ? 'var(--fg)' : 'var(--muted-light)',
+                                                borderColor: activeCategory === category ? 'var(--fg)' : 'transparent'
+                                            }}
+                                            onMouseOver={e => { if (activeCategory !== category) e.currentTarget.style.color = 'var(--fg)'; }}
+                                            onMouseOut={e => { if (activeCategory !== category) e.currentTarget.style.color = 'var(--muted-light)'; }}
+                                        >
+                                            {category}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Tools Grid */}
+                            {filteredTools.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                                    {filteredTools.map(tool => (
+                                        <ToolCard key={tool.id} tool={tool} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-20 fade-in">
+                                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4" style={{background: 'var(--card-alt)'}}>
+                                        <Icon name="Search" className="w-10 h-10" style={{color: 'var(--muted-light)'}} />
+                                    </div>
+                                    <h3 className="text-xl font-semibold mb-1" style={{color: 'var(--fg)'}}>No tools found</h3>
+                                    <p style={{color: 'var(--muted)'}}>Try adjusting your search or filter to find what you're looking for.</p>
+                                </div>
+                            )}
+                        </main>
                     </div>
-
-                    {/* Tools Grid */}
-                    {filteredTools.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {filteredTools.map(tool => (
-                                <ToolCard key={tool.id} tool={tool} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-20 fade-in">
-                            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4" style={{background: 'var(--card-alt)'}}>
-                                <Icon name="Search" className="w-10 h-10" style={{color: 'var(--muted-light)'}} />
-                            </div>
-                            <h3 className="text-xl font-semibold mb-1" style={{color: 'var(--fg)'}}>No tools found</h3>
-                            <p style={{color: 'var(--muted)'}}>Try adjusting your search or filter to find what you're looking for.</p>
-                        </div>
-                    )}
 
 
                 </div>
