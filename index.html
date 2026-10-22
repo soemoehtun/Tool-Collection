@@ -443,10 +443,23 @@
                 thumbnail: "./Thumbnail/vba.png",
                 url: "https://github.com/soemoehtun/CA-Cell-Vs-Site-Level-KPIs-Report",
                 readme: "https://github.com/soemoehtun/CA-Cell-Vs-Site-Level-KPIs-Report/blob/main/README.md"
+            },
+            {
+                id: 15,
+                name: "KPI Pivot Chart Create",
+                description: "A Python tool that generates KPI pivot tables and charts from raw KPI data for quick reporting and analysis.",
+                category: "Excel Tools",
+                group: "python",
+                icon: "bar-chart-3",
+                previewBg: "#4a148c",
+                previewIconColor: "#ffffff",
+                thumbnail: "./Thumbnail/Python.png",
+                url: "https://github.com/soemoehtun/KPI-Pivot-Chart-Create/releases/tag/V.01",
+                readme: "https://github.com/soemoehtun/KPI-Pivot-Chart-Create/blob/main/README.md"
             }
         ];
 
-        const groups = ["All", "Web Apps", "VBA"];
+        const groups = ["All", "Web Apps", "VBA", "Python"];
         const categories = ["All", "Excel Tools", "Map Tools", "Converter Tools", "Calculator Tools"];
 
         const isVbaTool = (tool) => tool.group === "vba";
@@ -746,7 +759,9 @@
             const filteredTools = useMemo(() => {
                 return toolsData.filter(tool => {
                     const matchesGroup = activeGroup === "All"
-                        || (activeGroup === "VBA" ? isVbaTool(tool) : !isVbaTool(tool));
+                        || (activeGroup === "VBA" ? isVbaTool(tool)
+                            : activeGroup === "Python" ? tool.group === "python"
+                            : !isVbaTool(tool) && tool.group !== "python");
                     const matchesCategory = activeCategory === "All" || tool.category === activeCategory;
                     const matchesSearch = tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                         tool.description.toLowerCase().includes(searchTerm.toLowerCase());
